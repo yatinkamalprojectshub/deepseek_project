@@ -98,8 +98,8 @@ with chat_container:
 user_query = st.chat_input("Type your coding question here...")
 
 def generate_ai_response(prompt_chain):
-    response = prompt_chain.invoke()
-    return response.content
+    processing_pipeline = prompt_chain | llm_engine | StrOutputParser()
+    return processing_pipeline.invoke({})
 
 def build_prompt_chain():
     prompt_sequence = [system_prompt]
@@ -119,4 +119,5 @@ if user_query:
     
     st.session_state.message_log.append({"role": "ai", "content": ai_response})
     st.rerun()
+
 
