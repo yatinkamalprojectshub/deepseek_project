@@ -1,3 +1,4 @@
+#works only on local host. its your 100% private workspace
 import streamlit as st 
 from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
