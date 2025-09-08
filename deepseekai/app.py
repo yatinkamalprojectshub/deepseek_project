@@ -1,3 +1,4 @@
+## this is completely 100% PRIVATE WORKSPACE with good response time, will work only on localhost. For deployment purpose refer app2.py
 import streamlit as st
 from langchain_ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
