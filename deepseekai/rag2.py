@@ -43,7 +43,9 @@ Answer:
 
 
 PDF_STORAGE_PATH = 'documents_store/pdfs'
-EMBEDDING_MODEL = OllamaEmbeddings(model = "mxbai-embed-large")   # <-- Embeddings switched
+from langchain.embeddings import HuggingFaceEmbeddings
+EMBEDDING_MODEL = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
 DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 LANGUAGE_MODEL = ChatGroq(model="llama-3.1-8b-instant", groq_api_key=GROQ_API_KEY)  # <-- Groq with API key
 
@@ -110,3 +112,4 @@ if uploaded_pdf:
 
         with st.chat_message("assistant"):
             st.write(ai_response)
+
