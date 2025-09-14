@@ -15,7 +15,7 @@ sentence-transformers
 # Playground / serving
 uvicorn
 fastapi
-sse-starlette
+sse_starlette
 streamlit
 langserve
 
@@ -30,6 +30,6 @@ langchainhub
 # PDF / Vector
 pdfplumber
 faiss-cpu
-huggingface_hub<0.21
 transformers
+
 
