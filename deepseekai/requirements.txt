@@ -10,12 +10,12 @@ bs4
 pypdf
 chromadb
 arxiv
-sentence_transformers
+sentence-transformers
 
 # Playground / serving
 uvicorn
 fastapi
-sse_starlette
+sse-starlette
 streamlit
 langserve
 
@@ -30,3 +30,6 @@ langchainhub
 # PDF / Vector
 pdfplumber
 faiss-cpu
+huggingface_hub<0.21
+transformers
+
