@@ -1,7 +1,8 @@
 import streamlit as st 
+import streamlit as st 
 import os
 from dotenv import load_dotenv
-
+import time
 # LangChain imports
 from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -16,6 +17,9 @@ from langchain_core.prompts import (
     AIMessagePromptTemplate,
     ChatPromptTemplate as ChatPromptTemplate2
 )
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+
 
 # Load environment variables
 load_dotenv()
@@ -54,7 +58,10 @@ st.markdown("""
 
 # -------------------- Shared Config --------------------
 PDF_STORAGE_PATH = 'documents_store/pdfs'
-EMBEDDING_MODEL = OllamaEmbeddings(model="mxbai-embed-large")
+EMBEDDING_MODEL = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
 DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 
 PROMPT_TEMPLATE = """
@@ -153,12 +160,14 @@ if app_mode == "📄 Document Assistant":
                 st.write(user_input)
 
             with st.spinner("🔍 Analyzing documents..."):
+                start_time = time.time()
                 relevent_docs = find_related_documents(user_input)
                 ai_response = generate_answer(user_input, relevent_docs)
+                elapsed = time.time() - start_time
 
             with st.chat_message("assistant"):
                 st.write(ai_response)
-
+                st.caption(f"⏱️ Answered in {elapsed:.2f} seconds")
 # -------------------- Smart Chat Assistant Mode --------------------
 elif app_mode == "💬 Smart Chat Assistant":
     st.title("🤖 Smart AI Assistant")
@@ -208,8 +217,11 @@ elif app_mode == "💬 Smart Chat Assistant":
         st.session_state.message_log.append({"role": "user", "content": user_query})
 
         with st.spinner("🤔 Thinking..."):
+            start_time = time.time()
             prompt_chain = build_prompt_chain(system_prompt, st.session_state.message_log)
             ai_response = generate_ai_response(prompt_chain, llm_engine)
+            elapsed = time.time() - start_time
 
-        st.session_state.message_log.append({"role": "ai", "content": ai_response})
+        st.session_state.message_log.append({"role": "ai", "content": f"{ai_response}\n\n⏱️ Answered in {elapsed:.2f} seconds"})
         st.rerun()
+
