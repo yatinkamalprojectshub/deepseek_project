@@ -3,7 +3,6 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 import time
-# LangChain imports
 from langchain_community.document_loaders import PDFPlumberLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.vectorstores import InMemoryVectorStore
@@ -21,11 +20,9 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 
-# Load environment variables
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# -------------------- Styling --------------------
 st.markdown("""
     <style>
     .stApp {
@@ -56,7 +53,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# -------------------- Shared Config --------------------
 PDF_STORAGE_PATH = 'documents_store/pdfs'
 EMBEDDING_MODEL = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
@@ -81,7 +77,6 @@ User Query:
 Answer:
 """
 
-# -------------------- Functions for Document Assistant --------------------
 def save_uploaded_file(uploaded_file):
     file_path = uploaded_file.name
     with open(file_path, "wb") as file:
@@ -114,7 +109,6 @@ def generate_answer(user_query, context_documents):
     response = response_chain.invoke({"user_query": user_query, "document_context": context_text})
     return response.content
 
-# -------------------- Functions for Chat Assistant --------------------
 def generate_ai_response(prompt_chain, llm_engine):
     processing_pipeline = prompt_chain | llm_engine | StrOutputParser()
     return processing_pipeline.invoke({})
@@ -128,12 +122,10 @@ def build_prompt_chain(system_prompt, message_log):
             prompt_sequence.append(AIMessagePromptTemplate.from_template(msg["content"]))
     return ChatPromptTemplate2.from_messages(prompt_sequence)
 
-# -------------------- Sidebar Mode Switch --------------------
 with st.sidebar:
     st.header("🛠️ Choose Mode")
     app_mode = st.radio("Select Application", ["📄 Document Assistant", "💬 Smart Chat Assistant"])
 
-# -------------------- Document Assistant Mode --------------------
 if app_mode == "📄 Document Assistant":
     st.title("📄 DOCUMENT AI")
     st.markdown("Your intelligent research assistant")
@@ -168,7 +160,7 @@ if app_mode == "📄 Document Assistant":
             with st.chat_message("assistant"):
                 st.write(ai_response)
                 st.caption(f"⏱️ Answered in {elapsed:.2f} seconds")
-# -------------------- Smart Chat Assistant Mode --------------------
+# Smart Chat Assistant Mode 
 elif app_mode == "💬 Smart Chat Assistant":
     st.title("🤖 Smart AI Assistant")
     st.caption("Switch between concise or detailed responses based on your needs")
@@ -224,4 +216,5 @@ elif app_mode == "💬 Smart Chat Assistant":
 
         st.session_state.message_log.append({"role": "ai", "content": f"{ai_response}\n\n⏱️ Answered in {elapsed:.2f} seconds"})
         st.rerun()
+
 
